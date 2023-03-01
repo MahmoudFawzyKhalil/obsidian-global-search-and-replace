@@ -1,11 +1,10 @@
 {
-	"id": "obsidian-global-search-and-replace",
+	"id": "global-search-and-replace",
 	"name": "Global Search and Replace",
 	"version": "0.1.0",
 	"minAppVersion": "0.15.0",
 	"description": "Search and replace in all vault files",
 	"author": "Mahmoud Fawzy Khalil",
 	"authorUrl": "https://github.com/MahmoudFawzyKhalil/",
-	"fundingUrl": "https://obsidian.md/pricing",
 	"isDesktopOnly": false
 }
