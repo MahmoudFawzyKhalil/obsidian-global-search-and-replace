@@ -1,6 +1,7 @@
-import { Plugin } from "obsidian";
+import { App, Plugin, PluginManifest } from "obsidian";
 import { PluginSettings } from "./settings/plugin-settings";
 import { SearchAndReplaceModal } from "./obsidian-components/search-and-replace-modal";
+import { FileOperator } from "./domain/file-operator";
 
 export const DEFAULT_SETTINGS: PluginSettings = {
 	replaceAllEnabled: false,
@@ -8,6 +9,12 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 
 export default class SearchAndReplacePlugin extends Plugin {
 	settings: PluginSettings | undefined;
+	private fileOperator: FileOperator;
+
+	constructor(app: App, manifest: PluginManifest) {
+		super(app, manifest);
+		this.fileOperator = new FileOperator(app);
+	}
 
 	async onload() {
 		await this.loadSettings();
@@ -22,7 +29,7 @@ export default class SearchAndReplacePlugin extends Plugin {
 			id: "search-and-replace",
 			name: "Search and Replace in all files",
 			callback: () => {
-				new SearchAndReplaceModal(this.app).open();
+				new SearchAndReplaceModal(this.app, this.fileOperator).open();
 			},
 		});
 	}

@@ -15,10 +15,10 @@ interface ReplaceOperationResult {
 	lineNumber: number;
 }
 
-class FileOperator {
+export class FileOperator {
 	private app: App;
 
-	constructor() {
+	constructor(app: App) {
 		this.app = app;
 	}
 
@@ -157,6 +157,3 @@ class FileOperator {
 		return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 	}
 }
-
-const fileOperator = new FileOperator();
-export default fileOperator;

@@ -3,15 +3,18 @@ import { createRoot, Root } from "react-dom/client";
 import * as React from "react";
 import SearchAndReplace from "../react-components/SearchAndReplace";
 import eventBridge from "../infrastructure/event-bridge";
+import { FileOperator } from "../domain/file-operator";
 
 export class SearchAndReplaceModal extends Modal {
-	root: Root | undefined;
+	private root: Root | undefined;
+	private readonly fileOperator: FileOperator;
 
-	constructor(app: App) {
+	constructor(app: App, fileOperator: FileOperator) {
 		super(app);
 		this.prepareModalEl();
 		this.initReactRoot();
 		this.registerEventListeners();
+		this.fileOperator = fileOperator;
 	}
 
 	private initReactRoot() {
@@ -52,7 +55,7 @@ export class SearchAndReplaceModal extends Modal {
 		if (!this.root) return;
 		this.root.render(
 			<React.StrictMode>
-				<SearchAndReplace />
+				<SearchAndReplace fileOperator={this.fileOperator} />
 			</React.StrictMode>
 		);
 	}

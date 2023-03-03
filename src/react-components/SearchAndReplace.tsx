@@ -6,14 +6,20 @@ import { ReplaceInput } from "./ReplaceInput";
 import { SearchResultsContainer } from "./SearchResultsContainer";
 import { SearchResult } from "../domain/search-result";
 import eventBridge from "../infrastructure/event-bridge";
-import fileOperator from "../domain/file-operator";
 import { findLastIndex, isBlank } from "../util/utils";
 import { ResultsNumberSummary } from "./ResultsNumberSummary";
 import { debounce } from "obsidian";
+import { FileOperator } from "../domain/file-operator";
 
 const NUMBER_OF_RESULTS_TO_DISPLAY_PER_RENDER = 20;
 
-export default function SearchAndReplace() {
+interface SearchAndReplaceProps {
+	fileOperator: FileOperator;
+}
+
+export default function SearchAndReplace({
+	fileOperator,
+}: SearchAndReplaceProps) {
 	const [searchText, setSearchText] = useState("");
 	const [replaceText, setReplaceText] = useState("");
 	const [selectedIndex, setSelectedIndex] = useState(0);
@@ -97,7 +103,7 @@ export default function SearchAndReplace() {
 				];
 			});
 		}
-	}, [selectedIndex, searchResults, replaceText, searchText]);
+	}, [selectedIndex, searchResults, replaceText, searchText, fileOperator]);
 
 	useEffect(() => {
 		eventBridge.onArrowUp = handleArrowUp;
