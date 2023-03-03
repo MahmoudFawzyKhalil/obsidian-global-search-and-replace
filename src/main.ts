@@ -19,7 +19,7 @@ export default class SearchAndReplacePlugin extends Plugin {
 
 	private thisAddPluginCommand(): void {
 		this.addCommand({
-			id: "snr-search-and-replace",
+			id: "search-and-replace",
 			name: "Search and Replace in all files",
 			callback: () => {
 				new SearchAndReplaceModal(this.app).open();
