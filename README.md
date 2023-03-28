@@ -11,11 +11,11 @@
 
 ## Installation
 
+### Through Obsidian community plugin browser
+This plugin is available through obsidian's official plugin marketplace.
+
 ### Manual
 Download a release's `main.js`, `styles.css`, and `manifest.json` files and install it by pasting the files into the `VAULT_PATH/.obsidian/plugins/global-search-and-replace` folder (enable viewing hidden folders to be able to see the `.obsidian` folder!)
-
-### Through Obsidian community plugin browser
-This plugin is not yet available through obsidian's official plugin marketplace.
 
 ## Usage
 
