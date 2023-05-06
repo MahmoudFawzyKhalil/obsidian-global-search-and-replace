@@ -153,6 +153,30 @@ export class FileOperator {
 		};
 	}
 
+	public async open(searchResult: SearchResult): Promise<ReplaceOperationResult | undefined> {
+		if (searchResult.filePath) {
+			await this.app.workspace.openLinkText(searchResult.filePath, "");
+			const activeEditor = this.app.workspace.activeEditor;
+
+			const editingTheCorrectFile = activeEditor?.file === searchResult.file;
+			if (!editingTheCorrectFile) return;
+	
+			const editor: Editor | undefined = activeEditor?.editor;
+			if (!editor) return;
+	
+		editor.setSelection(
+			{
+				line: searchResult.lineNumber - 1,
+				ch: searchResult.matchStartIndex,
+			},
+			{
+				line: searchResult.lineNumber - 1,
+				ch: searchResult.matchEndIndex + 1,
+			}
+		);
+		}
+	}
+
 	private escapeRegexString(str: string): string {
 		return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 	}

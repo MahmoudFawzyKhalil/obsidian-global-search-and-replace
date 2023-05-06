@@ -20,7 +20,6 @@ interface SearchAndReplaceProps {
 
 export default function SearchAndReplace({
 	fileOperator,
-	app,
 }: SearchAndReplaceProps) {
 	const [searchText, setSearchText] = useState("");
 	const [replaceText, setReplaceText] = useState("");
@@ -58,36 +57,8 @@ export default function SearchAndReplace({
 	}, [searchResults]);
 
 	const handleEnterOrClick = useCallback(async () => {
-		const {
-			filePath,
-			file,
-			lineNumber,
-			matchStartIndex,
-			matchEndIndex
-		} = searchResults[selectedIndex];
-
-		if (filePath) {
-			await app.workspace.openLinkText(filePath, "");
-			const activeEditor = app.workspace.activeEditor;
-
-			const editingTheCorrectFile = activeEditor?.file === file;
-			if (!editingTheCorrectFile) return;
-	
-			const editor: Editor | undefined = activeEditor?.editor;
-			if (!editor) return;
-	
-			editor.setSelection(
-				{
-					line: lineNumber - 1,
-					ch: matchStartIndex,
-				},
-				{
-					line: lineNumber - 1,
-					ch: matchEndIndex + 1,
-				}
-			);
-		}
-	}, [selectedIndex, searchResults, app]);
+		await fileOperator.open(searchResults[selectedIndex]);
+	}, [fileOperator, searchResults, selectedIndex]);
 
 	const handleShiftEnter = useCallback(async () => {
 		if (searchResults.length === 0) return;
