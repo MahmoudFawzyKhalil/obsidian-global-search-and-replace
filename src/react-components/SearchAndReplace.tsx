@@ -56,11 +56,11 @@ export default function SearchAndReplace({
 		});
 	}, [searchResults]);
 
-	const handleEnterOrClick = useCallback(async () => {
+	const handleCommandEnter = useCallback(async () => {
 		await fileOperator.open(searchResults[selectedIndex]);
 	}, [fileOperator, searchResults, selectedIndex]);
 
-	const handleShiftEnter = useCallback(async () => {
+	const handleEnterOrClick = useCallback(async () => {
 		if (searchResults.length === 0) return;
 
 		const replaceOperationResult = await fileOperator.replace(
@@ -114,8 +114,8 @@ export default function SearchAndReplace({
 		eventBridge.onArrowUp = handleArrowUp;
 		eventBridge.onArrowDown = handleArrowDown;
 		eventBridge.onEnter = handleEnterOrClick;
-		eventBridge.onCommandEnter = handleShiftEnter;
-	}, [handleArrowUp, handleArrowDown, handleEnterOrClick, handleShiftEnter]);
+		eventBridge.onCommandEnter = handleCommandEnter;
+	}, [handleArrowUp, handleArrowDown, handleEnterOrClick, handleCommandEnter]);
 
 	const handleReplaceInputChanged = (
 		event: React.ChangeEvent<HTMLInputElement>

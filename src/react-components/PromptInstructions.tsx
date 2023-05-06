@@ -8,11 +8,11 @@ export const PromptInstructions: React.FC = () => (
 		</div>
 		<div className="prompt-instruction">
 			<span className="prompt-instruction-command">↵</span>
-			<span>to open</span>
+			<span>to replace</span>
 		</div>
 		<div className="prompt-instruction">
 			<span className="prompt-instruction-command">⌘↵</span>
-			<span>to replace</span>
+			<span>to open</span>
 		</div>
 	</div>
 );
