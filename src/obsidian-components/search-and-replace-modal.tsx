@@ -49,6 +49,17 @@ export class SearchAndReplaceModal extends Modal {
 
 			eventBridge.onEnter?.(e, ctx);
 		});
+
+		// Open note at selectedIndex
+		this.scope.register(["Meta"], "Enter", (e, ctx) => {
+			e.preventDefault();
+
+			// Prevent press and hold
+			if (e.repeat) return;
+
+			eventBridge.onCommandEnter?.(e, ctx);
+			this.close();
+		});
 	}
 
 	onOpen() {

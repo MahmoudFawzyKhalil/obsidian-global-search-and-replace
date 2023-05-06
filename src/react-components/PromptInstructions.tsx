@@ -10,5 +10,9 @@ export const PromptInstructions: React.FC = () => (
 			<span className="prompt-instruction-command">↵</span>
 			<span>to replace</span>
 		</div>
+		<div className="prompt-instruction">
+			<span className="prompt-instruction-command">⌘↵</span>
+			<span>to open</span>
+		</div>
 	</div>
 );

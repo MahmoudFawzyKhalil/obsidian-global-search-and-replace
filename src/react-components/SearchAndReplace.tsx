@@ -55,6 +55,10 @@ export default function SearchAndReplace({
 		});
 	}, [searchResults]);
 
+	const handleCommandEnter = useCallback(async () => {
+		await fileOperator.open(searchResults[selectedIndex]);
+	}, [fileOperator, searchResults, selectedIndex]);
+
 	const handleEnterOrClick = useCallback(async () => {
 		if (searchResults.length === 0) return;
 
@@ -109,7 +113,8 @@ export default function SearchAndReplace({
 		eventBridge.onArrowUp = handleArrowUp;
 		eventBridge.onArrowDown = handleArrowDown;
 		eventBridge.onEnter = handleEnterOrClick;
-	}, [handleArrowUp, handleArrowDown, handleEnterOrClick]);
+		eventBridge.onCommandEnter = handleCommandEnter;
+	}, [handleArrowUp, handleArrowDown, handleEnterOrClick, handleCommandEnter]);
 
 	const handleReplaceInputChanged = (
 		event: React.ChangeEvent<HTMLInputElement>
