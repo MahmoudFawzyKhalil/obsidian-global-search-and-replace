@@ -67,7 +67,7 @@ export class SearchAndReplaceModal extends Modal {
 		if (!this.root) return;
 		this.root.render(
 			<React.StrictMode>
-				<SearchAndReplace fileOperator={this.fileOperator} app={app} />
+				<SearchAndReplace fileOperator={this.fileOperator} />
 			</React.StrictMode>
 		);
 	}

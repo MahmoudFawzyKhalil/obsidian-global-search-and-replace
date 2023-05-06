@@ -8,14 +8,13 @@ import { SearchResult } from "../domain/search-result";
 import eventBridge from "../infrastructure/event-bridge";
 import { findLastIndex, isBlank } from "../util/utils";
 import { ResultsNumberSummary } from "./ResultsNumberSummary";
-import { App, Editor, debounce } from "obsidian";
+import { debounce } from "obsidian";
 import { FileOperator } from "../domain/file-operator";
 
 const NUMBER_OF_RESULTS_TO_DISPLAY_PER_RENDER = 20;
 
 interface SearchAndReplaceProps {
 	fileOperator: FileOperator;
-	app: App;
 }
 
 export default function SearchAndReplace({
