@@ -5,6 +5,7 @@ export class EventBridge {
 	onArrowDown?: KeymapEventListener;
 
 	onEnter?: KeymapEventListener;
+	onCommandEnter?: KeymapEventListener;
 }
 
 const eventBridge = new EventBridge();

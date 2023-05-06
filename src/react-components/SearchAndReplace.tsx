@@ -8,17 +8,19 @@ import { SearchResult } from "../domain/search-result";
 import eventBridge from "../infrastructure/event-bridge";
 import { findLastIndex, isBlank } from "../util/utils";
 import { ResultsNumberSummary } from "./ResultsNumberSummary";
-import { debounce } from "obsidian";
+import { App, Editor, debounce } from "obsidian";
 import { FileOperator } from "../domain/file-operator";
 
 const NUMBER_OF_RESULTS_TO_DISPLAY_PER_RENDER = 20;
 
 interface SearchAndReplaceProps {
 	fileOperator: FileOperator;
+	app: App;
 }
 
 export default function SearchAndReplace({
 	fileOperator,
+	app,
 }: SearchAndReplaceProps) {
 	const [searchText, setSearchText] = useState("");
 	const [replaceText, setReplaceText] = useState("");
@@ -56,6 +58,38 @@ export default function SearchAndReplace({
 	}, [searchResults]);
 
 	const handleEnterOrClick = useCallback(async () => {
+		const {
+			filePath,
+			file,
+			lineNumber,
+			matchStartIndex,
+			matchEndIndex
+		} = searchResults[selectedIndex];
+
+		if (filePath) {
+			await app.workspace.openLinkText(filePath, "");
+			const activeEditor = app.workspace.activeEditor;
+
+			const editingTheCorrectFile = activeEditor?.file === file;
+			if (!editingTheCorrectFile) return;
+	
+			const editor: Editor | undefined = activeEditor?.editor;
+			if (!editor) return;
+	
+			editor.setSelection(
+				{
+					line: lineNumber - 1,
+					ch: matchStartIndex,
+				},
+				{
+					line: lineNumber - 1,
+					ch: matchEndIndex + 1,
+				}
+			);
+		}
+	}, [selectedIndex, searchResults, app]);
+
+	const handleShiftEnter = useCallback(async () => {
 		if (searchResults.length === 0) return;
 
 		const replaceOperationResult = await fileOperator.replace(
@@ -109,7 +143,8 @@ export default function SearchAndReplace({
 		eventBridge.onArrowUp = handleArrowUp;
 		eventBridge.onArrowDown = handleArrowDown;
 		eventBridge.onEnter = handleEnterOrClick;
-	}, [handleArrowUp, handleArrowDown, handleEnterOrClick]);
+		eventBridge.onCommandEnter = handleShiftEnter;
+	}, [handleArrowUp, handleArrowDown, handleEnterOrClick, handleShiftEnter]);
 
 	const handleReplaceInputChanged = (
 		event: React.ChangeEvent<HTMLInputElement>

@@ -40,14 +40,26 @@ export class SearchAndReplaceModal extends Modal {
 			eventBridge.onArrowDown?.(e, ctx);
 		});
 
-		// Replace note at selectedIndex
+		// Open selectedIndex note
 		this.scope.register([], "Enter", (e, ctx) => {
 			e.preventDefault();
 
 			// Prevent press and hold
 			if (e.repeat) return;
 
+			this.close();
 			eventBridge.onEnter?.(e, ctx);
+		});
+
+		// Replace note at selectedIndex
+		this.scope.register(["Meta"], "Enter", (e, ctx) => {
+			e.preventDefault();
+
+			// Prevent press and hold
+			if (e.repeat) return;
+
+			this.close();
+			eventBridge.onCommandEnter?.(e, ctx);
 		});
 	}
 
@@ -55,7 +67,7 @@ export class SearchAndReplaceModal extends Modal {
 		if (!this.root) return;
 		this.root.render(
 			<React.StrictMode>
-				<SearchAndReplace fileOperator={this.fileOperator} />
+				<SearchAndReplace fileOperator={this.fileOperator} app={app} />
 			</React.StrictMode>
 		);
 	}
