@@ -1,7 +1,7 @@
 {
 	"id": "global-search-and-replace",
 	"name": "Global Search and Replace",
-	"version": "0.1.2",
+	"version": "0.2.0",
 	"minAppVersion": "0.15.0",
 	"description": "Search and replace in all vault files",
 	"author": "Mahmoud Fawzy Khalil",
