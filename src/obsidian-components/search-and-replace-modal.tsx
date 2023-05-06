@@ -57,8 +57,8 @@ export class SearchAndReplaceModal extends Modal {
 			// Prevent press and hold
 			if (e.repeat) return;
 
-			this.close();
 			eventBridge.onCommandEnter?.(e, ctx);
+			this.close();
 		});
 	}
 
