@@ -10,8 +10,10 @@
 
 ## Features
 
-- Search all of your vault's markdown files for a case-sensitive match, and do a replace
-- Keyboard shortcuts `Enter` to replace and arrow keys to cycle through matches
+- Search all of your vault's markdown files for a case-sensitive match
+- Replace match
+- Open note at match
+- Keyboard shortcuts `Enter` to replace, `Cmd Enter` to open at match, and arrow keys to cycle through matches
 
 ## Installation
 
