@@ -15,6 +15,11 @@ interface ReplaceOperationResult {
 	lineNumber: number;
 }
 
+const EMPTY_SEARCH_OPERATION_RESULT = {
+	numberOfFilesWithMatches: 0,
+	searchResults: [],
+};
+
 export class FileOperator {
 	private app: App;
 
@@ -22,16 +27,20 @@ export class FileOperator {
 		this.app = app;
 	}
 
-	public async search(query: string): Promise<SearchOperationResult> {
+	public async search(
+		query: string,
+		regexEnabled: boolean,
+		caseSensitivityEnabled: boolean
+	): Promise<SearchOperationResult> {
 		if (isBlank(query)) {
-			return {
-				numberOfFilesWithMatches: 0,
-				searchResults: [],
-			};
+			return EMPTY_SEARCH_OPERATION_RESULT;
 		}
 
-		const queryRegex = this.createQueryRegex(query);
-
+		const queryRegex = this.createQueryRegex(
+			query,
+			regexEnabled,
+			caseSensitivityEnabled
+		);
 		const markdownFiles = this.app.vault.getMarkdownFiles();
 		const searchResults: SearchResult[] = [];
 
@@ -40,48 +49,52 @@ export class FileOperator {
 		for (const file of markdownFiles) {
 			const contents = await this.app.vault.read(file);
 			const lines = this.splitIntoLines(contents);
-			let foundAMatchInThisFile = false;
+			let foundAMatchInCurrentFile = false;
 
 			lines.forEach((line, i) => {
 				const intermediateResults: SearchResult[] = this.searchInLine(
 					line,
 					i + 1,
 					file,
-					query,
 					queryRegex
 				);
 
 				if (intermediateResults.length !== 0) {
-					foundAMatchInThisFile = true;
+					foundAMatchInCurrentFile = true;
 				}
 
 				searchResults.push(...intermediateResults);
 			});
 
-			if (foundAMatchInThisFile) {
+			if (foundAMatchInCurrentFile) {
 				numberOfFilesWithMatches++;
+				foundAMatchInCurrentFile = false;
 			}
-
-			foundAMatchInThisFile = false;
 		}
 
 		return { searchResults, numberOfFilesWithMatches };
 	}
 
-	private createQueryRegex(query: string) {
-		return new RegExp(this.escapeRegexString(query), "g");
+	private createQueryRegex(
+		query: string,
+		regexEnabled: boolean,
+		caseSensitivityEnabled: boolean
+	) {
+		let flags = "g";
+		if (!caseSensitivityEnabled) {
+			flags += "i";
+		}
+		query = regexEnabled ? query : this.escapeRegexString(query);
+		return new RegExp(query, flags);
 	}
 
 	private searchInLine(
 		line: string,
 		lineNumber: number,
 		file: TFile,
-		query: string,
-		queryRegex?: RegExp
+		queryRegex: RegExp
 	): SearchResult[] {
-		const matches = line.matchAll(
-			queryRegex ? queryRegex : this.createQueryRegex(query)
-		);
+		const matches = line.matchAll(queryRegex);
 
 		return [...matches].map((match: RegExpMatchArray) => {
 			if (match.index === undefined)
@@ -94,7 +107,7 @@ export class FileOperator {
 				lineNumber,
 				file.path,
 				match.index,
-				match.index + query.length - 1,
+				match.index + match[0].length - 1,
 				file
 			);
 		});
@@ -107,7 +120,9 @@ export class FileOperator {
 	public async replace(
 		searchResult: SearchResult,
 		replacementText: string,
-		query: string
+		query: string,
+		regexEnabled: boolean,
+		caseSensitivityEnabled: boolean
 	): Promise<ReplaceOperationResult | undefined> {
 		const file = searchResult.file;
 		if (!file) return;
@@ -138,12 +153,18 @@ export class FileOperator {
 		// where if the user edits the query, stale results are returned for a ~1 second
 		await this.app.vault.modify(file, editor.getValue());
 
+		const queryRegex = this.createQueryRegex(
+			query,
+			regexEnabled,
+			caseSensitivityEnabled
+		);
+
 		// Necessary to update matchStartIndex and matchEndIndex for search results that were on the same line
 		const lineSearchResults = this.searchInLine(
 			editor.getLine(searchResult.lineNumber - 1),
 			searchResult.lineNumber,
 			file,
-			query
+			queryRegex
 		);
 
 		return {
@@ -153,27 +174,30 @@ export class FileOperator {
 		};
 	}
 
-	public async open(searchResult: SearchResult): Promise<ReplaceOperationResult | undefined> {
+	public async open(
+		searchResult: SearchResult
+	): Promise<ReplaceOperationResult | undefined> {
 		if (searchResult.filePath) {
 			await this.app.workspace.openLinkText(searchResult.filePath, "");
 			const activeEditor = this.app.workspace.activeEditor;
 
-			const editingTheCorrectFile = activeEditor?.file === searchResult.file;
+			const editingTheCorrectFile =
+				activeEditor?.file === searchResult.file;
 			if (!editingTheCorrectFile) return;
-	
+
 			const editor: Editor | undefined = activeEditor?.editor;
 			if (!editor) return;
-	
-		editor.setSelection(
-			{
-				line: searchResult.lineNumber - 1,
-				ch: searchResult.matchStartIndex,
-			},
-			{
-				line: searchResult.lineNumber - 1,
-				ch: searchResult.matchEndIndex + 1,
-			}
-		);
+
+			editor.setSelection(
+				{
+					line: searchResult.lineNumber - 1,
+					ch: searchResult.matchStartIndex,
+				},
+				{
+					line: searchResult.lineNumber - 1,
+					ch: searchResult.matchEndIndex + 1,
+				}
+			);
 		}
 	}
 

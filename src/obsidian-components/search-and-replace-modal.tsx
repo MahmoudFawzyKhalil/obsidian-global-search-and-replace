@@ -17,14 +17,14 @@ export class SearchAndReplaceModal extends Modal {
 		this.fileOperator = fileOperator;
 	}
 
-	private initReactRoot() {
-		this.root = createRoot(this.modalEl);
-	}
-
 	private prepareModalEl() {
 		this.modalEl.replaceChildren();
 		this.modalEl.addClass("prompt");
 		this.modalEl.removeClass("modal");
+	}
+
+	private initReactRoot() {
+		this.root = createRoot(this.modalEl);
 	}
 
 	private registerEventListeners() {
@@ -51,7 +51,7 @@ export class SearchAndReplaceModal extends Modal {
 		});
 
 		// Open note at selectedIndex
-		this.scope.register(["Meta"], "Enter", (e, ctx) => {
+		this.scope.register(["Mod"], "Enter", (e, ctx) => {
 			e.preventDefault();
 
 			// Prevent press and hold
