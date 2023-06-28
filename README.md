@@ -10,10 +10,12 @@
 
 ## Features
 
-- Search all of your vault's markdown files for a case-sensitive match
-- Replace match
-- Open note at match
-- Keyboard shortcuts `Enter` to replace, `Cmd Enter` to open at match, and arrow keys to cycle through matches
+- Search all of your vault's markdown files for a match
+- Regex support
+- Case-sensitive search support
+- Replace match `Enter` or `click`
+- Open note at match `Ctrl+Enter` on Windows/Linux, `Cmd+Enter` on Mac
+- Cycle through matches using arrow keys
 
 ## Installation
 
