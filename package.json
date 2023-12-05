@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-search-and-replace",
-	"version": "0.0.0",
+	"version": "0.3.0",
 	"description": "Global search and replace for obsidian.md",
 	"main": "main.js",
 	"scripts": {
@@ -9,26 +9,30 @@
 		"version": "node version-bump.mjs && git add manifest.json versions.json"
 	},
 	"keywords": [],
-	"author": "",
+	"author": {
+		"name": "Mahmoud Fawzy Khalil",
+		"url": "https://github.com/MahmoudFawzyKhalil/",
+		"email": "mahmoudfawzykhalil98@gmail.com"
+	},
 	"license": "MIT",
 	"devDependencies": {
-		"@types/node": "^18.14.0",
-		"@types/react": "^18.0.28",
-		"@types/react-dom": "^18.0.11",
+		"@types/node": "18.14.0",
+		"@types/react": "18.0.28",
+		"@types/react-dom": "18.0.11",
 		"@typescript-eslint/eslint-plugin": "5.29.0",
 		"@typescript-eslint/parser": "5.29.0",
 		"builtin-modules": "3.3.0",
 		"esbuild": "0.17.3",
-		"eslint": "^8.34.0",
-		"eslint-plugin-react": "^7.32.2",
-		"eslint-plugin-react-hooks": "^4.6.0",
-		"obsidian": "latest",
-		"prettier": "^2.8.4",
+		"eslint": "8.34.0",
+		"eslint-plugin-react": "7.32.2",
+		"eslint-plugin-react-hooks": "4.6.0",
+		"obsidian": "1.1.1",
+		"prettier": "2.8.4",
 		"tslib": "2.4.0",
 		"typescript": "4.7.4"
 	},
 	"dependencies": {
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0"
+		"react": "18.2.0",
+		"react-dom": "18.2.0"
 	}
 }
