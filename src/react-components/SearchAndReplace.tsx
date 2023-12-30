@@ -17,9 +17,7 @@ interface SearchAndReplaceProps {
 	fileOperator: FileOperator;
 }
 
-export default function SearchAndReplace({
-	fileOperator,
-}: SearchAndReplaceProps) {
+export default function SearchAndReplace({ fileOperator }: SearchAndReplaceProps) {
 	const [searchText, setSearchText] = useState("");
 	const [replaceText, setReplaceText] = useState("");
 	const [selectedIndex, setSelectedIndex] = useState(0);
@@ -32,7 +30,7 @@ export default function SearchAndReplace({
 	const [numberOfFilesWithMatches, setNumberOfFilesWithMatches] = useState(0);
 
 	const moveSelectionUp = useCallback(() => {
-		setSelectedIndex((i) => {
+		setSelectedIndex(i => {
 			let newIndex;
 			if (i === 0) {
 				newIndex = i;
@@ -45,7 +43,7 @@ export default function SearchAndReplace({
 	}, []);
 
 	const moveSelectionDown = useCallback(() => {
-		setSelectedIndex((i) => {
+		setSelectedIndex(i => {
 			let newIndex;
 			if (i === searchResults.length - 1) {
 				newIndex = i;
@@ -69,21 +67,20 @@ export default function SearchAndReplace({
 		);
 
 		if (!replaceOperationResult) {
-			setSearchResults((previousResults) => {
-				return previousResults.filter((r, i) => i !== selectedIndex);
+			setSearchResults(previousResults => {
+				return previousResults.filter((_, i) => i !== selectedIndex);
 			});
 		} else {
-			setSearchResults((previousResults) => {
+			setSearchResults(previousResults => {
 				const hasSameFilePathAndLineNumber = (r: SearchResult) => {
-					const samePath =
-						r.filePath === replaceOperationResult.filePath;
-					const sameLineNumber =
-						r.lineNumber === replaceOperationResult.lineNumber;
+					const samePath = r.filePath === replaceOperationResult.filePath;
+					const sameLineNumber = r.lineNumber === replaceOperationResult.lineNumber;
 					return samePath && sameLineNumber;
 				};
 
-				const firstIndexOfSamePathAndLineNumber =
-					previousResults.findIndex(hasSameFilePathAndLineNumber);
+				const firstIndexOfSamePathAndLineNumber = previousResults.findIndex(
+					hasSameFilePathAndLineNumber
+				);
 
 				const lastIndexOfSamePathAndLineNumber = findLastIndex(
 					previousResults,
@@ -92,18 +89,13 @@ export default function SearchAndReplace({
 
 				// If selectedIndex is out of bounds, reset it
 				if (selectedIndex > searchResults.length - 2) {
-					setSelectedIndex((s) => s - 1);
+					setSelectedIndex(s => s - 1);
 				}
 
 				return [
-					...previousResults.slice(
-						0,
-						firstIndexOfSamePathAndLineNumber
-					),
+					...previousResults.slice(0, firstIndexOfSamePathAndLineNumber),
 					...replaceOperationResult.lineSearchResults,
-					...previousResults.slice(
-						lastIndexOfSamePathAndLineNumber + 1
-					),
+					...previousResults.slice(lastIndexOfSamePathAndLineNumber + 1),
 				];
 			});
 		}
@@ -120,47 +112,33 @@ export default function SearchAndReplace({
 	const openSelectionInEditor = useCallback(async () => {
 		await fileOperator.open(searchResults[selectedIndex]);
 	}, [fileOperator, searchResults, selectedIndex]);
-	// Bind event handlers to events coming from Obsidian
 
+	// Bind event handlers to events coming from Obsidian
 	useEffect(() => {
 		eventBridge.onArrowUp = moveSelectionUp;
 		eventBridge.onArrowDown = moveSelectionDown;
 		eventBridge.onEnter = replaceSelection;
 		eventBridge.onCommandEnter = openSelectionInEditor;
-	}, [
-		moveSelectionUp,
-		moveSelectionDown,
-		replaceSelection,
-		openSelectionInEditor,
-	]);
-	const handleReplaceInputChanged = (
-		event: React.ChangeEvent<HTMLInputElement>
-	) => {
+	}, [moveSelectionUp, moveSelectionDown, replaceSelection, openSelectionInEditor]);
+	const handleReplaceInputChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setReplaceText(event.target.value);
 	};
 
 	const search = useCallback(
-		async (
-			query: string,
-			withRegex: boolean,
-			withCaseSensitivity: boolean
-		) => {
-			const { searchResults, numberOfFilesWithMatches } =
-				await fileOperator.search(
-					query,
-					withRegex,
-					withCaseSensitivity
-				);
+		async (query: string, withRegex: boolean, withCaseSensitivity: boolean) => {
+			const { searchResults, numberOfFilesWithMatches } = await fileOperator.search(
+				query,
+				withRegex,
+				withCaseSensitivity
+			);
 
 			setNumberOfFilesWithMatches(numberOfFilesWithMatches);
 			setSearchResults(searchResults);
 			setSelectedIndex(0);
 			scrollIntoView(0);
-			setNumberOfResultsToDisplay(
-				INITIAL_NUMBER_OF_RESULTS_TO_DISPLAY_PER_RENDER
-			);
+			setNumberOfResultsToDisplay(INITIAL_NUMBER_OF_RESULTS_TO_DISPLAY_PER_RENDER);
 		},
-		[fileOperator, regexEnabled]
+		[fileOperator]
 	);
 
 	// useMemo instead of useCallback because the function is not inline
@@ -168,11 +146,8 @@ export default function SearchAndReplace({
 	const debouncedSearch = useMemo(
 		() =>
 			debounce(
-				(
-					query: string,
-					withRegex: boolean,
-					withCaseSensitivity: boolean
-				) => search(query, withRegex, withCaseSensitivity),
+				(query: string, withRegex: boolean, withCaseSensitivity: boolean) =>
+					search(query, withRegex, withCaseSensitivity),
 				500,
 				false
 			),
@@ -205,10 +180,7 @@ export default function SearchAndReplace({
 	);
 
 	const scrollThresholdExceededHandler = useCallback(
-		() =>
-			setNumberOfResultsToDisplay(
-				(n) => n + INITIAL_NUMBER_OF_RESULTS_TO_DISPLAY_PER_RENDER
-			),
+		() => setNumberOfResultsToDisplay(n => n + INITIAL_NUMBER_OF_RESULTS_TO_DISPLAY_PER_RENDER),
 		[]
 	);
 
@@ -219,7 +191,7 @@ export default function SearchAndReplace({
 
 	const regexButtonClickedHandler = useCallback(() => {
 		clearResults();
-		setRegexEnabled((p) => {
+		setRegexEnabled(p => {
 			const newRegexEnabled = !p;
 			doSearch(searchText, newRegexEnabled, caseSensitivityEnabled);
 			return newRegexEnabled;
@@ -228,7 +200,7 @@ export default function SearchAndReplace({
 
 	const caseSensitivityButtonClickedHandler = useCallback(() => {
 		clearResults();
-		setCaseSensitivityEnabled((p) => {
+		setCaseSensitivityEnabled(p => {
 			const newCaseSensitivityEnabled = !p;
 			doSearch(searchText, regexEnabled, newCaseSensitivityEnabled);
 			return newCaseSensitivityEnabled;
@@ -242,15 +214,10 @@ export default function SearchAndReplace({
 				onSearchInputChange={handleSearchInputChanged}
 				onEnableRegexButtonClick={regexButtonClickedHandler}
 				regexEnabled={regexEnabled}
-				onEnableCaseSensitivityButtonClick={
-					caseSensitivityButtonClickedHandler
-				}
+				onEnableCaseSensitivityButtonClick={caseSensitivityButtonClickedHandler}
 				caseSensitivityEnabled={caseSensitivityEnabled}
 			/>
-			<ReplaceInput
-				value={replaceText}
-				onChange={handleReplaceInputChanged}
-			/>
+			<ReplaceInput value={replaceText} onChange={handleReplaceInputChanged} />
 			<SearchResultsContainer
 				selectedIndex={selectedIndex}
 				selectedIndexChangedHandler={selectedIndexChangedHandler}
