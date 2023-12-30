@@ -148,8 +148,8 @@ export default function SearchAndReplace({ fileOperator }: SearchAndReplaceProps
 			debounce(
 				(query: string, withRegex: boolean, withCaseSensitivity: boolean) =>
 					search(query, withRegex, withCaseSensitivity),
-				500,
-				false
+				100,
+				true
 			),
 		[search]
 	);
