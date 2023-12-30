@@ -18,13 +18,13 @@ export default class SearchAndReplacePlugin extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
-		this.thisAddPluginCommand();
+		this.addPluginCommand();
 
 		// TODO there are no settings yet
 		// this.addSettingTab(new SettingsTab(this.app, this));
 	}
 
-	private thisAddPluginCommand(): void {
+	private addPluginCommand(): void {
 		this.addCommand({
 			id: "search-and-replace",
 			name: "Search and Replace in all files",
