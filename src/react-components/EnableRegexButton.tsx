@@ -2,12 +2,12 @@ import * as React from "react";
 
 export interface EnableRegexButtonProps {
 	regexEnabled: boolean;
-	onEnableRegexButtonClick: React.MouseEventHandler<HTMLDivElement>;
+	onToggleRegexSearch: React.MouseEventHandler<HTMLDivElement>;
 }
 
 export function EnableRegexButton({
 	regexEnabled,
-	onEnableRegexButtonClick,
+	onToggleRegexSearch,
 }: EnableRegexButtonProps) {
 	return (
 		<div
@@ -17,11 +17,9 @@ export function EnableRegexButton({
 		>
 			<div
 				className={`workspace-tab-header-inner snr-workspace-tab-header-inner snr-regex-button ${
-					regexEnabled
-						? "snr-workspace-tab-header-inner-icon-active"
-						: ""
+					regexEnabled ? "snr-workspace-tab-header-inner-icon-active" : ""
 				}`}
-				onClick={onEnableRegexButtonClick}
+				onClick={onToggleRegexSearch}
 			>
 				<div className="workspace-tab-header-inner-icon">
 					<svg

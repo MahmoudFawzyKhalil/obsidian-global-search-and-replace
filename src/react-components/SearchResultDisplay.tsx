@@ -1,43 +1,35 @@
 import * as React from "react";
 import { PropsWithChildren } from "react";
 import { SearchResult } from "../domain/search-result";
-import {
-	SearchResultChosenHandler,
-	SelectedIndexChangedHandler,
-} from "./SearchResultsContainer";
+import { SearchResultChosenHandler, SelectedIndexChangedHandler } from "./SearchResultsContainer";
 
 interface SearchResultDisplayProps extends PropsWithChildren {
 	isSelected: boolean;
 	searchResult: SearchResult;
 	index: number;
-	selectedIndexChangeHandler: SelectedIndexChangedHandler;
-	searchResultChosenHandler: SearchResultChosenHandler;
+	onSelectedIndexChanged: SelectedIndexChangedHandler;
+	onSearchResultChosen: SearchResultChosenHandler;
 }
 
-// TODO useMemo()?
-export const SearchResultDisplay = ({
+export default function SearchResultDisplay({
 	isSelected,
 	searchResult,
 	index,
-	selectedIndexChangeHandler,
-	searchResultChosenHandler,
-}: SearchResultDisplayProps) => {
+	onSelectedIndexChanged,
+	onSearchResultChosen,
+}: SearchResultDisplayProps) {
 	return (
 		<div
-			onPointerMove={() => selectedIndexChangeHandler(index)}
-			onPointerDown={() => selectedIndexChangeHandler(index)}
-			onPointerUp={searchResultChosenHandler}
+			onPointerMove={() => onSelectedIndexChanged(index)}
+			onPointerDown={() => onSelectedIndexChanged(index)}
+			onPointerUp={onSearchResultChosen}
 			data-search-result-index={index}
-			className={`suggestion-item mod-complex ${
-				isSelected ? "is-selected" : ""
-			}`}
+			className={`suggestion-item mod-complex ${isSelected ? "is-selected" : ""}`}
 		>
 			<div className="suggestion-content snr-suggestion-content">
 				<div className="suggestion-title">
 					{searchResult.getBeforeMatchSubstring()}
-					<span className="snr-highlight">
-						{searchResult.getMatchSubstring()}
-					</span>
+					<span className="snr-highlight">{searchResult.getMatchSubstring()}</span>
 					{searchResult.getAfterMatchSubstring()}
 				</div>
 			</div>
@@ -45,10 +37,8 @@ export const SearchResultDisplay = ({
 				<span className="suggestion-flair snr-suggestion-flair">
 					{searchResult.filePath}
 				</span>
-				<span className="snr-line-number">
-					{searchResult.lineNumber}
-				</span>
+				<span className="snr-line-number">{searchResult.lineNumber}</span>
 			</div>
 		</div>
 	);
-};
+}

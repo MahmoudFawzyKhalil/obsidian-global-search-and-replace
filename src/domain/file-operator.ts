@@ -9,7 +9,7 @@ interface SearchOperationResult {
 	numberOfFilesWithMatches: number;
 }
 
-interface ReplaceOperationResult {
+export interface ReplaceOperationResult {
 	lineSearchResults: SearchResult[];
 	filePath: string;
 	lineNumber: number;
@@ -36,11 +36,7 @@ export class FileOperator {
 			return EMPTY_SEARCH_OPERATION_RESULT;
 		}
 
-		const queryRegex = this.createQueryRegex(
-			query,
-			regexEnabled,
-			caseSensitivityEnabled
-		);
+		const queryRegex = this.createQueryRegex(query, regexEnabled, caseSensitivityEnabled);
 		const markdownFiles = this.app.vault.getMarkdownFiles();
 		const searchResults: SearchResult[] = [];
 
@@ -98,9 +94,7 @@ export class FileOperator {
 
 		return [...matches].map((match: RegExpMatchArray) => {
 			if (match.index === undefined)
-				throw new Error(
-					"Regex match index was undefined. This should never happen."
-				);
+				throw new Error("Regex match index was undefined. This should never happen.");
 
 			return new SearchResult(
 				line,
@@ -153,11 +147,7 @@ export class FileOperator {
 		// where if the user edits the query, stale results are returned for a ~1 second
 		await this.app.vault.modify(file, editor.getValue());
 
-		const queryRegex = this.createQueryRegex(
-			query,
-			regexEnabled,
-			caseSensitivityEnabled
-		);
+		const queryRegex = this.createQueryRegex(query, regexEnabled, caseSensitivityEnabled);
 
 		// Necessary to update matchStartIndex and matchEndIndex for search results that were on the same line
 		const lineSearchResults = this.searchInLine(
@@ -174,15 +164,12 @@ export class FileOperator {
 		};
 	}
 
-	public async open(
-		searchResult: SearchResult
-	): Promise<ReplaceOperationResult | undefined> {
+	public async open(searchResult: SearchResult): Promise<ReplaceOperationResult | undefined> {
 		if (searchResult.filePath) {
 			await this.app.workspace.openLinkText(searchResult.filePath, "");
 			const activeEditor = this.app.workspace.activeEditor;
 
-			const editingTheCorrectFile =
-				activeEditor?.file === searchResult.file;
+			const editingTheCorrectFile = activeEditor?.file === searchResult.file;
 			if (!editingTheCorrectFile) return;
 
 			const editor: Editor | undefined = activeEditor?.editor;

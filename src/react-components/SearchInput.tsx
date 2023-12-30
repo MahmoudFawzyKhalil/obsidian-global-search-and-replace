@@ -1,19 +1,22 @@
 import * as React from "react";
 import { EnableRegexButton, EnableRegexButtonProps } from "./EnableRegexButton";
-import {EnableCaseSensitivityButton, EnableCaseSensitivityButtonProps} from "./EnableCaseSensitivityButton";
+import {
+	EnableCaseSensitivityButton,
+	EnableCaseSensitivityButtonProps,
+} from "./EnableCaseSensitivityButton";
 
 interface SearchInputProps extends EnableRegexButtonProps, EnableCaseSensitivityButtonProps {
-	searchInputValue: string;
-	onSearchInputChange: React.ChangeEventHandler<HTMLInputElement>;
+	value: string;
+	onChange: React.ChangeEventHandler<HTMLInputElement>;
 }
 
-export function SearchInput({
-	searchInputValue,
-	onSearchInputChange,
+export default function SearchInput({
+	value,
+	onChange,
 	regexEnabled,
-	onEnableRegexButtonClick,
-	onEnableCaseSensitivityButtonClick,
-	caseSensitivityEnabled
+	onToggleRegexSearch,
+	onToggleCaseSensitiveSearch,
+	caseSensitivityEnabled,
 }: SearchInputProps) {
 	return (
 		<div className="snr-input-icon-wrapper">
@@ -23,16 +26,16 @@ export function SearchInput({
 				type="text"
 				placeholder="Search"
 				autoFocus
-				value={searchInputValue}
-				onChange={onSearchInputChange}
+				value={value}
+				onChange={onChange}
 			/>
 			<EnableCaseSensitivityButton
 				caseSensitivityEnabled={caseSensitivityEnabled}
-				onEnableCaseSensitivityButtonClick={onEnableCaseSensitivityButtonClick}
+				onToggleCaseSensitiveSearch={onToggleCaseSensitiveSearch}
 			/>
 			<EnableRegexButton
 				regexEnabled={regexEnabled}
-				onEnableRegexButtonClick={onEnableRegexButtonClick}
+				onToggleRegexSearch={onToggleRegexSearch}
 			/>
 		</div>
 	);

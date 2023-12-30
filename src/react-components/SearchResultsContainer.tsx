@@ -1,14 +1,14 @@
 import * as React from "react";
 import { SearchResult } from "../domain/search-result";
-import { SearchResultDisplay } from "./SearchResultDisplay";
+import SearchResultDisplay from "./SearchResultDisplay";
 
 interface SearchResultsContainerProps {
 	searchResults: SearchResult[];
 	selectedIndex: number;
 	numberOfResultsToDisplay: number;
-	scrollThresholdExceededHandler: () => void;
-	selectedIndexChangedHandler: SelectedIndexChangedHandler;
-	searchResultChosenHandler: SearchResultChosenHandler;
+	onScrollThresholdExceeded: () => void;
+	onSelectedIndexChanged: SelectedIndexChangedHandler;
+	onSearchResultChosen: SearchResultChosenHandler;
 }
 
 export type SelectedIndexChangedHandler = (newIndex: number) => void;
@@ -23,13 +23,13 @@ function createKey(searchResult: SearchResult) {
 	);
 }
 
-export function SearchResultsContainer({
+function SearchResultsContainer({
 	searchResults,
 	selectedIndex,
 	numberOfResultsToDisplay,
-	selectedIndexChangedHandler,
-	scrollThresholdExceededHandler,
-	searchResultChosenHandler,
+	onSelectedIndexChanged,
+	onScrollThresholdExceeded,
+	onSearchResultChosen,
 }: SearchResultsContainerProps) {
 	const resultsMarkup = searchResults.map((searchResult, index) => {
 		const key = createKey(searchResult);
@@ -42,13 +42,13 @@ export function SearchResultsContainer({
 				index={index}
 				isSelected={index == selectedIndex}
 				searchResult={searchResult}
-				selectedIndexChangeHandler={selectedIndexChangedHandler}
-				searchResultChosenHandler={searchResultChosenHandler}
+				onSelectedIndexChanged={onSelectedIndexChanged}
+				onSearchResultChosen={onSearchResultChosen}
 			/>
 		);
 	});
 
-	function handleScroll(event: React.UIEvent<HTMLDivElement>): void {
+	function handleScroll(event: React.UIEvent<HTMLDivElement>) {
 		const promptResultsDiv = event.target as HTMLDivElement;
 
 		const elementTotalHeightWithOverflow = promptResultsDiv.scrollHeight;
@@ -57,11 +57,10 @@ export function SearchResultsContainer({
 		const scrollOffsetFromTop = promptResultsDiv.scrollTop;
 
 		const scrollPercentage =
-			(scrollOffsetFromTop + elementActualHeight) /
-			elementTotalHeightWithOverflow;
+			(scrollOffsetFromTop + elementActualHeight) / elementTotalHeightWithOverflow;
 
 		if (scrollPercentage >= 0.95) {
-			scrollThresholdExceededHandler();
+			onScrollThresholdExceeded();
 		}
 	}
 
@@ -71,3 +70,5 @@ export function SearchResultsContainer({
 		</div>
 	);
 }
+
+export default React.memo(SearchResultsContainer);

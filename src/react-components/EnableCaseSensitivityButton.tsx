@@ -2,12 +2,12 @@ import * as React from "react";
 
 export interface EnableCaseSensitivityButtonProps {
 	caseSensitivityEnabled: boolean;
-	onEnableCaseSensitivityButtonClick: React.MouseEventHandler<HTMLDivElement>;
+	onToggleCaseSensitiveSearch: React.MouseEventHandler<HTMLDivElement>;
 }
 
 export function EnableCaseSensitivityButton({
 	caseSensitivityEnabled,
-	onEnableCaseSensitivityButtonClick,
+	onToggleCaseSensitiveSearch,
 }: EnableCaseSensitivityButtonProps) {
 	return (
 		<div
@@ -21,7 +21,7 @@ export function EnableCaseSensitivityButton({
 						? "snr-workspace-tab-header-inner-icon-active"
 						: ""
 				}`}
-				onClick={onEnableCaseSensitivityButtonClick}
+				onClick={onToggleCaseSensitiveSearch}
 			>
 				<div className="workspace-tab-header-inner-icon">
 					<svg
