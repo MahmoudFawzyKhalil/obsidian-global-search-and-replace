@@ -1,18 +1,18 @@
-import { App, Modal } from "obsidian";
-import { createRoot, Root } from "react-dom/client";
+import {App, Modal} from "obsidian";
+import {createRoot, Root} from "react-dom/client";
 import * as React from "react";
 import SearchAndReplace from "../react-components/SearchAndReplace";
 import eventBridge from "../infrastructure/event-bridge";
-import { FileOperator } from "../domain/file-operator";
+import {FileOperator} from "../domain/file-operator";
 
 export class SearchAndReplaceModal extends Modal {
-	private root: Root | undefined;
+	private readonly reactRoot: Root;
 	private readonly fileOperator: FileOperator;
 
 	constructor(app: App, fileOperator: FileOperator) {
 		super(app);
 		this.prepareModalEl();
-		this.initReactRoot();
+		this.reactRoot = createRoot(this.modalEl);
 		this.registerEventListeners();
 		this.fileOperator = fileOperator;
 	}
@@ -21,10 +21,6 @@ export class SearchAndReplaceModal extends Modal {
 		this.modalEl.replaceChildren();
 		this.modalEl.addClass("prompt");
 		this.modalEl.removeClass("modal");
-	}
-
-	private initReactRoot() {
-		this.root = createRoot(this.modalEl);
 	}
 
 	private registerEventListeners() {
@@ -63,16 +59,12 @@ export class SearchAndReplaceModal extends Modal {
 	}
 
 	onOpen() {
-		if (!this.root) return;
-		this.root.render(
-			<React.StrictMode>
-				<SearchAndReplace fileOperator={this.fileOperator} />
-			</React.StrictMode>
+		this.reactRoot.render(
+			<SearchAndReplace fileOperator={this.fileOperator}/>
 		);
 	}
 
 	onClose() {
-		if (!this.root) return;
-		this.root.unmount();
+		this.reactRoot.unmount();
 	}
 }
