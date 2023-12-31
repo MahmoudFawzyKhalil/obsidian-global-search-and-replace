@@ -31,17 +31,6 @@ export interface SearchAndReplaceState {
 	numberOfFilesWithMatches: number;
 }
 
-const INITIAL_STATE: SearchAndReplaceState = {
-	searchQuery: "",
-	replacementText: "",
-	selectedIndex: 0,
-	numberOfResultsToDisplay: NUMBER_OF_RESULTS_TO_DISPLAY_PER_BATCH,
-	regexEnabled: false,
-	caseSensitivityEnabled: false,
-	searchResults: [],
-	numberOfFilesWithMatches: 0,
-};
-
 export type SearchAndReplaceAction =
 	| { type: "clear" }
 	| { type: "move_selection_up" }
@@ -157,19 +146,29 @@ function reducer(
 			};
 		}
 		default: {
-			return INITIAL_STATE;
+			throw new Error(`Unhandled action type: ${action}`);
 		}
 	}
 }
 
 export default function SearchAndReplace({ fileOperator }: SearchAndReplaceProps) {
-	const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
+	const [state, dispatch] = useReducer(reducer, {
+		searchQuery: "",
+		replacementText: "",
+		selectedIndex: 0,
+		numberOfResultsToDisplay: NUMBER_OF_RESULTS_TO_DISPLAY_PER_BATCH,
+		regexEnabled: false,
+		caseSensitivityEnabled: false,
+		searchResults: [],
+		numberOfFilesWithMatches: 0,
+	});
 
-	const replaceSelection = useReplaceSelection(state, dispatch, fileOperator);
-	const openSelectionInEditor = useOpenSelectionInEditor(fileOperator, state);
 
 	useSearch(state, dispatch, fileOperator);
 	useScrollSelectedSearchResultIntoView(state.selectedIndex);
+
+	const replaceSelection = useReplaceSelection(state, dispatch, fileOperator);
+	const openSelectionInEditor = useOpenSelectionInEditor(fileOperator, state);
 	useBindObsidianEventHandlers(dispatch, replaceSelection, openSelectionInEditor);
 
 	const handleReplaceInputChanged = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
