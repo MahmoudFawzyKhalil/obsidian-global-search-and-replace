@@ -18,6 +18,8 @@
 		"sourceType": "module"
 	},
 	"rules": {
+		"indent": "off",
+		"no-mixed-spaces-and-tabs": "off",
 		"no-unused-vars": "off",
 		"@typescript-eslint/no-unused-vars": [
 			"error",
