@@ -141,13 +141,18 @@ export class FileOperator {
 			}
 		);
 
-		editor.replaceSelection(replacementText);
+		const queryRegex = this.createQueryRegex(query, regexEnabled, caseSensitivityEnabled);
+
+		// Replace the selection with replacementText
+		if (regexEnabled) {
+			editor.replaceSelection(editor.getSelection().replaceAll(queryRegex, replacementText));
+		} else {
+			editor.replaceSelection(replacementText);
+		}
 
 		// Force flush of editor change to prevent race condition
 		// where if the user edits the query, stale results are returned for a ~1 second
 		await this.app.vault.modify(file, editor.getValue());
-
-		const queryRegex = this.createQueryRegex(query, regexEnabled, caseSensitivityEnabled);
 
 		// Necessary to update matchStartIndex and matchEndIndex for search results that were on the same line
 		const lineSearchResults = this.searchInLine(

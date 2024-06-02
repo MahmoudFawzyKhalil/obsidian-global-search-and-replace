@@ -28,3 +28,31 @@ Download a release's `main.js`, `styles.css`, and `manifest.json` files and inst
 ## Usage
 
 Use the command palette and activate the `Global Search and Replace: Search and Replace in all files` command.
+
+### Specifying a string as the replacement
+
+The replacement string can include the following special replacement patterns:
+
+| Pattern   | Inserts                                                                                        |
+| --------- | ---------------------------------------------------------------------------------------------- |
+| `$$`      | Inserts a `"$"`.                                                                               |
+| `$&`      | Inserts the matched substring.                                                                 |
+| `` $` ``  | Inserts the portion of the string that precedes the matched substring.                         |
+| `$'`      | Inserts the portion of the string that follows the matched substring.                          |
+| `$n`      | Inserts the `n`th (`1`-indexed) capturing group where `n` is a positive integer less than 100. |
+| `$<Name>` | Inserts the named capturing group where `Name` is the group name.                              |
+
+`$n` and `$<Name>` are only available if the `pattern` argument is a [`RegExp`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp) object. If the `pattern` is a string, or if the corresponding capturing group isn't present in the regex, then the pattern will be replaced as a literal. If the group is present but isn't matched (because it's part of a disjunction), it will be replaced with an empty string.
+
+JSCopy to Clipboard
+
+```javascript
+"foo" replace /(f)/,"$2"
+// "$2oo"; the regex doesn't have the second group
+
+"foo" replace "f","$1"
+// "$1oo"; the pattern is a string, so it doesn't have any groups
+
+"foo" replace /(f)|(g)/,"$2"
+// "oo"; the second group exists but isn't matched
+```
